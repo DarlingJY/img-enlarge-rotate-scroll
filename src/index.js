@@ -341,10 +341,10 @@ const {
           {/*原始图片容器*/}
           <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflowY:'scroll', overflowX:'hidden', background}}>
             <img id={`minImg${index}`} className={cssStyle.imgStyle} src={minImg} alt=""
-                 style={{maxWidth: `calc(${width} - 10px)`, ...minImgStyle}}
+                 style={{maxWidth: `calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, ...minImgStyle}}
             />
             <div className={cssStyle.maskBlock}
-                 style={{width:`calc(${width} - 10px)`, height,...maskBlockStyle}}
+                 style={{width:`calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, height,...maskBlockStyle}}
                  onMouseEnter={this.mouseEnter}
                  onMouseLeave={this.mouseLeave}
                  onMouseMove={this.mouseMove}/>
@@ -365,7 +365,7 @@ const {
               <img
                 id={`maxImg${index}`}
                 className={cssStyle.largerImg}
-                style={{maxWidth: `calc(${width} - 10px)`, ...enlargeStyle}}
+                style={{maxWidth: `calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, ...enlargeStyle}}
                 src={maxImg}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
@@ -413,4 +413,4 @@ const {
   }
 }
 
-// render(<ImgEnlargeAndRotate/>, document.getElementById('root'))
+render(<ImgEnlargeAndRotate/>, document.getElementById('root'))
