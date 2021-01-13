@@ -243,6 +243,10 @@ export default class ImgEnlargeAndRotate extends Component {
 
   //下载图片2
   downloadFile = (content, fileName) => {
+    if(typeof(this.props.customRequest)==='function'){
+      this.props.customRequest()
+      return;
+    }
     if (content.indexOf('http') > -1) {
       let aLink = document.createElement('a');
       let evt = document.createEvent("HTMLEvents");
@@ -413,4 +417,4 @@ const {
   }
 }
 
-render(<ImgEnlargeAndRotate/>, document.getElementById('root'))
+// render(<ImgEnlargeAndRotate/>, document.getElementById('root'))
