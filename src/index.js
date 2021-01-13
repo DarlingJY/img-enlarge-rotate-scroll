@@ -339,7 +339,7 @@ const {
         <div className={cssStyle.enlargeImg}>
 
           {/*原始图片容器*/}
-          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflowY:'scroll', overflowX:'hidden', background}}>
+          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflow:'hidden auto', background}}>
             <img id={`minImg${index}`} className={cssStyle.imgStyle} src={minImg} alt=""
                  style={{maxWidth: `calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, ...minImgStyle}}
             />
