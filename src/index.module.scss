@@ -65,7 +65,7 @@
 
     // 图片样式
     .imgStyle {
-      max-width: 100%;
+      max-width: calc(100% - 10px);
       // max-height: 100%;
       position: absolute;
       z-index: 101;

@@ -339,12 +339,12 @@ const {
         <div className={cssStyle.enlargeImg}>
 
           {/*原始图片容器*/}
-          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflow:'scroll', background}}>
+          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflowY:'scroll', overflowX:'hidden', background}}>
             <img id={`minImg${index}`} className={cssStyle.imgStyle} src={minImg} alt=""
-                 style={{maxWidth: width, ...minImgStyle}}
+                 style={{maxWidth: `calc(${width} - 10px)`, ...minImgStyle}}
             />
             <div className={cssStyle.maskBlock}
-                 style={{width, height,...maskBlockStyle}}
+                 style={{width:`calc(${width} - 10px)`, height,...maskBlockStyle}}
                  onMouseEnter={this.mouseEnter}
                  onMouseLeave={this.mouseLeave}
                  onMouseMove={this.mouseMove}/>
@@ -365,7 +365,7 @@ const {
               <img
                 id={`maxImg${index}`}
                 className={cssStyle.largerImg}
-                style={{maxWidth: width, ...enlargeStyle}}
+                style={{maxWidth: `calc(${width} - 10px)`, ...enlargeStyle}}
                 src={maxImg}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
