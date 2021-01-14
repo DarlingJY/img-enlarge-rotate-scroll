@@ -19,6 +19,7 @@ import {render} from "react-dom";
 import './assets/iconfont/iconfont.css';
 import cssStyle from './index.module.scss';
 import demoImg from './assets/image/demo.jpg';
+import demoImg1 from './assets/image/1.jpg';
 import {myBrowser, SaveAs5} from './assets/funcs/index';
 
 export default class ImgEnlargeAndRotate extends Component {
@@ -168,8 +169,8 @@ export default class ImgEnlargeAndRotate extends Component {
 
     //改变旋转后的（原图和放大的图宽高）适应原容器
 
-    newMinImgStyle.maxWidth = newEnlargeStyle.maxWidth = Math.abs(rounds) % 2 === 0 ? width : height;
-    newMinImgStyle.maxHeight = newEnlargeStyle.maxHeight = Math.abs(rounds) % 2 === 0 ? height : width;
+    // newMinImgStyle.maxWidth = newEnlargeStyle.maxWidth = Math.abs(rounds) % 2 === 0 ? `calc(${isNaN(Number(width))?width:width+'px'} - 10px)` : 'none';
+    // newMinImgStyle.maxHeight = newEnlargeStyle.maxHeight = Math.abs(rounds) % 2 === 0 ? 'none' : `calc(${isNaN(Number(width))?width:width+'px'} - 10px)`;
 
     //旋转原图
     newMinImgStyle.transform = `rotate(${90 * (rounds % 4)}deg)`;
@@ -189,27 +190,28 @@ export default class ImgEnlargeAndRotate extends Component {
       //旋转且平移回去
       const halfHeight = imgPosition.height / 2;
       const halfWidth = imgPosition.width / 2;
+      const halfW = width / 2
 
       if (Math.abs(rounds) % 4 === 1) {
         newMinImgStyle.transform = rounds < 0 ?
-          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth}px, -${halfHeight}px)` :
-          `rotate(${90 * (rounds % 4)}deg) translate(-${halfWidth}px, ${halfHeight}px)`;
+          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth-halfW}px,-${halfHeight}px)` :
+          `rotate(${90 * (rounds % 4)}deg) translate(${-(halfWidth-halfW)}px,${halfHeight}px)`;
 
-        newMaskBlockStyle.transform = `translate(-${halfWidth}px, -${halfHeight}px)`;
+        newMaskBlockStyle.transform = `translate(${-(Math.abs(halfWidth-halfW))}px,${halfHeight}px)`;
 
       } else if (Math.abs(rounds) % 4 === 2) {
-        newMinImgStyle.transform = `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth}px, ${halfHeight}px)`;
+        newMinImgStyle.transform = `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth}px, 0px)`;
         newMaskBlockStyle.transform = '';
 
       } else if (Math.abs(rounds) % 4 === 3) {
         newMinImgStyle.transform = rounds < 0 ?
-          `rotate(${90 * (rounds % 4)}deg) translate(-${halfWidth}px, ${halfHeight}px)` :
-          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth}px, -${halfHeight}px)`;
-        newMaskBlockStyle.transform = rounds < 0 ? `translate(-${halfWidth}px, ${-halfHeight}px)` : '';
+          `rotate(${90 * (rounds % 4)}deg) translate(${-(halfWidth-halfW)}px,${halfHeight}px)` :
+          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth-halfW}px, ${halfHeight}px)`;
+          newMaskBlockStyle.transform = `translate(${-(Math.abs(halfWidth-halfW))}px,${halfHeight}px)`;
 
       } else if (Math.abs(rounds) % 4 === 0) {
-        newMinImgStyle.transform = `rotate(${90 * (rounds % 4)}deg) translate(-${halfWidth}px, -${halfHeight}px)`;
-        newMaskBlockStyle.transform = rounds < 0 ? `translate(-${halfWidth}px, ${-halfHeight}px)` : '';
+        newMinImgStyle.transform = `rotate(${90 * (rounds % 4)}deg) translate(-${halfWidth}px, 0px)`;
+        newMaskBlockStyle.transform = rounds < 0 ? `translate(-${halfWidth}px,0px)` : '';
 
       }
 
@@ -301,7 +303,7 @@ const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA1YAAAqvCAYAAABaWRBpA
 
 const {
       width = 600, height = 400, background = '#eee', mouseBlockSize = 100, scale = 4,
-      minImg = demoImg, maxImg = minImg, imgName = '图片',
+      minImg = img, maxImg = minImg, imgName = '图片',
       hideACW, hideCW, hideDownload, index = '', toolPosition = 'top', hideText,
       largeOnLeft
     } = this.props;
@@ -343,10 +345,12 @@ const {
         <div className={cssStyle.enlargeImg}>
 
           {/*原始图片容器*/}
-          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflow:'hidden auto', background}}>
+          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflowY:'auto',overflowX:'hidden', background}}>
+          <div>
             <img id={`minImg${index}`} className={cssStyle.imgStyle} src={minImg} alt=""
                  style={{maxWidth: `calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, ...minImgStyle}}
             />
+            </div>
             <div className={cssStyle.maskBlock}
                  style={{width:`calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, height,...maskBlockStyle}}
                  onMouseEnter={this.mouseEnter}
