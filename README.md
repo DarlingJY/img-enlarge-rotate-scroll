@@ -23,6 +23,7 @@
 |   largeOnLeft  |     可选    | largeOnLeft设置放大图片在左边,该参数用来在页面最右
 边使用该组件时使用 |
 |   customRequest | 可选 | 自定义下载方式 |
+|maskClick | 可选 | 鼠标点击事件 |
 
 ## usage
 `import ImgEnlargeAndRotate from 'img-enlarge-rotate';`

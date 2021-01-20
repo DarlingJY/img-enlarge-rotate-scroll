@@ -13,6 +13,8 @@
  * 可选：toolPosition工具条的位置，默认top,支持top和bottom
  * 可选：hideText隐藏文字：鼠标移入可局部放大
  * 可选：largeOnLeft设置放大图片在左边
+ * 可选：maskClick鼠标点击事件
+ * 可选：customRequest 自定义下载方式
  */
 import React, {Component} from "react";
 import {render} from "react-dom";
@@ -45,7 +47,6 @@ export default class ImgEnlargeAndRotate extends Component {
     let imgPosition = document.getElementById(`minImg${index}`).getBoundingClientRect();
     this.setState({
       magnifierOff: true,
-      maskBlockStyle: {width: imgPosition.width, height: imgPosition.height},//改变遮罩的大小保持和图片一致
     });
   };
 
@@ -91,6 +92,7 @@ export default class ImgEnlargeAndRotate extends Component {
     //方块一半的大小
     const halfBlockSize = mouseBlockSize / 2;
     var scrollTop = document.getElementById(`minImgDiv${index}`).scrollTop
+    var scrollLeft = document.getElementById(`minImgDiv${index}`).scrollLeft
     // 防止鼠标移动过快导致计算失误，只要小于或者大于对应值，直接设置偏移量等于最小值或者最大值
     if (offsetX < halfBlockSize) {
       offsetX = halfBlockSize;
@@ -106,7 +108,7 @@ export default class ImgEnlargeAndRotate extends Component {
     }
 
     //滑块位置
-    newMouseBlockStyle.left = parseFloat(oLeft + offsetX - halfBlockSize) + "px";
+    newMouseBlockStyle.left = parseFloat(oLeft + offsetX+scrollLeft - halfBlockSize) + "px";
     newMouseBlockStyle.top = parseFloat(oTop + offsetY+scrollTop - halfBlockSize) + "px";
 
     /* 计算图片放大位置 */
@@ -156,6 +158,9 @@ export default class ImgEnlargeAndRotate extends Component {
   rotateImg = (type) => {
     const {width = 600, height = 400, scale = 4, index = ''} = this.props;
 
+    //旋转滚动条高度回到0
+    document.getElementById(`minImgDiv${index}`).scrollTop = 0
+
     let newMinImgStyle = {};
     let {rotateNum, enlargeStyle, maskBlockStyle} = this.state;
     //旋转圈数
@@ -190,24 +195,24 @@ export default class ImgEnlargeAndRotate extends Component {
       //旋转且平移回去
       const halfHeight = imgPosition.height / 2;
       const halfWidth = imgPosition.width / 2;
-      const halfW = width / 2
-
+      //90deg以后 imgPosition.height 就等于实际容器宽 即（width-10）  
       if (Math.abs(rounds) % 4 === 1) {
+        console.log(11111)
         newMinImgStyle.transform = rounds < 0 ?
-          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth-halfW}px,-${halfHeight}px)` :
-          `rotate(${90 * (rounds % 4)}deg) translate(${-(halfWidth-halfW)}px,${halfHeight}px)`;
+          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth-halfHeight}px,${halfWidth-imgPosition.height}px)` :
+          `rotate(${90 * (rounds % 4)}deg) translate(${-(halfWidth-halfHeight)}px,${-(halfWidth-imgPosition.height)}px)`;
 
-        newMaskBlockStyle.transform = `translate(${-(Math.abs(halfWidth-halfW))}px,${halfHeight}px)`;
-
+        newMaskBlockStyle.transform = `translate(${-halfHeight}px,0px)`;
+       
       } else if (Math.abs(rounds) % 4 === 2) {
         newMinImgStyle.transform = `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth}px, 0px)`;
         newMaskBlockStyle.transform = '';
 
       } else if (Math.abs(rounds) % 4 === 3) {
         newMinImgStyle.transform = rounds < 0 ?
-          `rotate(${90 * (rounds % 4)}deg) translate(${-(halfWidth-halfW)}px,${halfHeight}px)` :
-          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth-halfW}px, ${halfHeight}px)`;
-          newMaskBlockStyle.transform = `translate(${-(Math.abs(halfWidth-halfW))}px,${halfHeight}px)`;
+          `rotate(${90 * (rounds % 4)}deg) translate(${-(halfWidth-halfHeight)}px,${-(halfWidth-imgPosition.height)}px)` :
+          `rotate(${90 * (rounds % 4)}deg) translate(${halfWidth-halfHeight}px, ${halfWidth-imgPosition.height}px)`;
+          newMaskBlockStyle.transform = `translate(${-halfHeight}px,0px)`;
 
       } else if (Math.abs(rounds) % 4 === 0) {
         newMinImgStyle.transform = `rotate(${90 * (rounds % 4)}deg) translate(-${halfWidth}px, 0px)`;
@@ -303,7 +308,7 @@ const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA1YAAAqvCAYAAABaWRBpA
 
 const {
       width = 600, height = 400, background = '#eee', mouseBlockSize = 100, scale = 4,
-      minImg = img, maxImg = minImg, imgName = '图片',
+      minImg = demoImg1, maxImg = minImg, imgName = '图片',
       hideACW, hideCW, hideDownload, index = '', toolPosition = 'top', hideText,
       largeOnLeft
     } = this.props;
@@ -345,7 +350,7 @@ const {
         <div className={cssStyle.enlargeImg}>
 
           {/*原始图片容器*/}
-          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflowY:'auto',overflowX:'hidden', background}}>
+          <div id={`minImgDiv${index}`} className={cssStyle.imgContainer} style={{width, height, overflowY:'auto',overflowX:'auto', background}}>
           <div>
             <img id={`minImg${index}`} className={cssStyle.imgStyle} src={minImg} alt=""
                  style={{maxWidth: `calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, ...minImgStyle}}
@@ -353,6 +358,7 @@ const {
             </div>
             <div className={cssStyle.maskBlock}
                  style={{width:`calc(${isNaN(Number(width))?width:width+'px'} - 10px)`, height,...maskBlockStyle}}
+                 onClick = {()=>this.props.maskClick&&this.props.maskClick()}
                  onMouseEnter={this.mouseEnter}
                  onMouseLeave={this.mouseLeave}
                  onMouseMove={this.mouseMove}/>
