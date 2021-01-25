@@ -47,6 +47,7 @@ export default class ImgEnlargeAndRotate extends Component {
     let imgPosition = document.getElementById(`minImg${index}`).getBoundingClientRect();
     this.setState({
       magnifierOff: true,
+      maskBlockStyle: {...this.state.maskBlockStyle,width: imgPosition.width, height: imgPosition.height},//改变遮罩的大小保持和图片一致
     });
   };
 
@@ -106,7 +107,7 @@ export default class ImgEnlargeAndRotate extends Component {
     if (offsetY > imgHeight - halfBlockSize) {
       offsetY = imgHeight - halfBlockSize;
     }
-
+console.log(scrollLeft,'scrollLeft')
     //滑块位置
     newMouseBlockStyle.left = parseFloat(oLeft + offsetX+scrollLeft - halfBlockSize) + "px";
     newMouseBlockStyle.top = parseFloat(oTop + offsetY+scrollTop - halfBlockSize) + "px";
@@ -308,7 +309,7 @@ const img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA1YAAAqvCAYAAABaWRBpA
 
 const {
       width = 600, height = 400, background = '#eee', mouseBlockSize = 100, scale = 4,
-      minImg = demoImg1, maxImg = minImg, imgName = '图片',
+      minImg = img, maxImg = minImg, imgName = '图片',
       hideACW, hideCW, hideDownload, index = '', toolPosition = 'top', hideText,
       largeOnLeft
     } = this.props;
@@ -427,4 +428,4 @@ const {
   }
 }
 
-// render(<ImgEnlargeAndRotate/>, document.getElementById('root'))
+render(<ImgEnlargeAndRotate/>, document.getElementById('root'))
